@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кукольный бутик · Мастерица Наташа</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0C0A1A;
+      --gold: #C9A347;
+      --gold-bright: #E8C455;
+      --gold-mid: rgba(201,163,71,0.45);
+      --gold-glow: rgba(201,163,71,0.12);
+      --cream: #F5F0E8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ── STARS CANVAS ── */
+    #stars-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 40%, rgba(110,28,170,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 35% at 60% 30%, rgba(180,100,30,0.08) 0%, transparent 55%);
+    }
+
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-size: clamp(56px, 12vw, 128px);
+      font-weight: 800;
+      line-height: 0.9;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-brand {
+      font-size: clamp(18px, 3vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      margin-top: 20px;
+      text-shadow: 0 0 30px var(--gold-mid);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+
+    .hero-tagline {
+      font-size: clamp(14px, 2vw, 22px);
+      font-weight: 300;
+      color: var(--cream);
+      opacity: 0;
+      margin-top: 12px;
+      animation: fadeUp 0.9s 0.9s forwards;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+      margin: 32px auto;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.1s forwards;
+    }
+
+    .hero-stats {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.3s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 48px;
+      padding: 16px 44px;
+      border: 1.5px solid var(--gold);
+      border-radius: 4px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.5s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+      box-shadow: 0 0 30px var(--gold-mid);
+    }
+
+    /* ── PROJECT SECTION ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--cream);
+      margin-bottom: 40px;
+    }
+
+    .section-title span { color: var(--gold); }
+
+    /* ── SCENES GRID ── */
+    .scenes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+
+    .scene-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,163,71,0.15);
+      border-radius: 8px;
+      padding: 28px 24px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .scene-card:hover {
+      border-color: rgba(201,163,71,0.4);
+      background: rgba(201,163,71,0.04);
+    }
+
+    .scene-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    .scene-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .scene-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--cream);
+      opacity: 0.6;
+      line-height: 1.6;
+    }
+
+    .scene-dur {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(201,163,71,0.3);
+      border-radius: 20px;
+      padding: 3px 12px;
+    }
+
+    /* ── TECH STACK ── */
+    .tech-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .tech-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      background: rgba(201,163,71,0.1);
+      border: 1px solid rgba(201,163,71,0.2);
+      border-radius: 4px;
+      padding: 6px 14px;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px;
+      background: rgba(201,163,71,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+
+    .stat-cell {
+      background: var(--bg);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      text-shadow: 0 0 30px var(--gold-mid);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--cream);
+      opacity: 0.6;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ── DIVIDER ── */
+    .hr {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,163,71,0.3), transparent);
+      margin: 0 24px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 48px 24px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--cream);
+      opacity: 0.35;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll-reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">PRJ-01 · Рекламный ролик · Remotion</div>
+  <h1 class="hero-name">Наташа</h1>
+  <div class="hero-brand">Кукольный бутик</div>
+  <div class="hero-tagline">творчество, душа и вдохновение в каждой детали</div>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">★ 5.0 &nbsp;·&nbsp; 5 025 отзывов &nbsp;·&nbsp; Wildberries</div>
+  <a class="hero-cta" href="#project">Смотреть проект</a>
+</section>
+
+<div class="hr"></div>
+
+<!-- STATS -->
+<div class="section" id="project">
+  <div class="stats-bar reveal">
+    <div class="stat-cell">
+      <div class="stat-value">37s</div>
+      <div class="stat-label">Длительность</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Сцен</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">1080p</div>
+      <div class="stat-label">1080×1920</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">30</div>
+      <div class="stat-label">FPS</div>
+    </div>
+  </div>
+</div>
+
+<div class="hr"></div>
+
+<!-- SCENES -->
+<div class="section">
+  <div class="section-label reveal">Структура ролика</div>
+  <h2 class="section-title reveal">7 сцен · <span>Apple-эстетика</span></h2>
+
+  <div class="scenes-grid">
+    <div class="scene-card reveal">
+      <div class="scene-num">01 · HOOK</div>
+      <div class="scene-name">Каждая кукла заслуживает СКАЗКИ</div>
+      <div class="scene-desc">Анимированный градиентный фон с переливом. Падающие золотые звёзды ✦ с twinkle-эффектом.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">02 · MASTER</div>
+      <div class="scene-name">Мастерица Наташа</div>
+      <div class="scene-desc">AI-постер в русском народном стиле. Clip-path reveal. Золотой бутик + статистика магазина.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">03 · FEATURE 1</div>
+      <div class="scene-name">Ручной пошив</div>
+      <div class="scene-desc">Красные замшевые туфли ручной работы. Slam-blur анимация заголовка.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">04 · FEATURE 2</div>
+      <div class="scene-name">Уникальный дизайн</div>
+      <div class="scene-desc">Розовые балетки с розочкой. Zoom-позиционирование продукта в фокус кадра.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">05 · FEATURE 3</div>
+      <div class="scene-name">Вдохновение в сказках</div>
+      <div class="scene-desc">Белые туфли Mary Jane. Многослойный градиентный оверлей для читаемости текста.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">06 · SOCIAL PROOF</div>
+      <div class="scene-name">Нам доверяют</div>
+      <div class="scene-desc">5.0 рейтинг · 5 025 отзывов · 23 105 заказов выкуплено. Bounce-анимация цифр.</div>
+      <span class="scene-dur">7 сек</span>
+    </div>
+    <div class="scene-card reveal">
+      <div class="scene-num">07 · CTA</div>
+      <div class="scene-name">Заказать на Wildberries</div>
+      <div class="scene-desc">Круглое фото мастерицы с золотой рамкой. Пульсирующая кнопка призыва к действию.</div>
+      <span class="scene-dur">5 сек</span>
+    </div>
+  </div>
+</div>
+
+<div class="hr"></div>
+
+<!-- TECH -->
+<div class="section">
+  <div class="section-label reveal">Технологии</div>
+  <h2 class="section-title reveal">Сделано на <span>Remotion</span></h2>
+  <p style="font-size:16px; font-weight:300; line-height:1.8; opacity:0.75;" class="reveal">
+    Ролик полностью создан кодом — без Premier Pro, After Effects или Figma.
+    React-компоненты, детерминированные анимации через <code style="color:var(--gold)">interpolate()</code>,
+    Google Fonts и продуктовые фото с Wildberries.
+  </p>
+  <div class="tech-row reveal">
+    <span class="tech-tag">Remotion 4</span>
+    <span class="tech-tag">React + TypeScript</span>
+    <span class="tech-tag">Inter / Google Fonts</span>
+    <span class="tech-tag">CSS clip-path reveal</span>
+    <span class="tech-tag">StarParticles ✦</span>
+    <span class="tech-tag">Easing.bezier()</span>
+    <span class="tech-tag">slam-blur</span>
+    <span class="tech-tag">scaleInBounce</span>
+    <span class="tech-tag">1080×1920 Reels</span>
+    <span class="tech-tag">h264 · 11 MB</span>
+  </div>
+</div>
+
+<div class="hr"></div>
+
+<footer>
+  PRJ-01-craftsman · Кукольный бутик · Мастерица Наташа · 2026
+</footer>
+
+<script>
+  // ── Falling stars canvas ──
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  const STAR_COUNT = 40;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const stars = Array.from({ length: STAR_COUNT }, (_, i) => ({
+    x:      ((i * 307.3) % 1000) / 1000,
+    y:      ((i * 193.7) % 1000) / 1000,
+    speed:  0.00015 + ((i * 17) % 10) * 0.00003,
+    size:   8 + ((i * 11) % 14),
+    phase:  (i * 23) % 62,
+    rot:    (i * 47) % 360,
+    alpha:  0.15 + ((i * 7) % 5) * 0.07,
+  }));
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.y += s.speed;
+      if (s.y > 1.05) s.y = -0.05;
+      const twinkle = 0.5 + 0.5 * Math.sin(t * 0.04 + s.phase);
+      const alpha = s.alpha * twinkle;
+      const x = s.x * canvas.width;
+      const y = s.y * canvas.height;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((s.rot + t * 0.2) * Math.PI / 180);
+      ctx.font = `${s.size}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#C9A347';
+      ctx.shadowColor = '#C9A347';
+      ctx.shadowBlur = s.size * 1.5;
+      ctx.fillText('✦', 0, 0);
+      ctx.restore();
+    });
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
